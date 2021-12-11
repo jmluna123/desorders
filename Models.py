@@ -1,17 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[68]:
-
-
-get_ipython().system(' pip install SimpleITK')
-get_ipython().system(' pip install numpy')
-get_ipython().system(' pip install tensorflow')
-get_ipython().system(' pip install keras')
-get_ipython().system(' pip install sklearn')
-get_ipython().system(' pip install cv2')
-get_ipython().system(' pip install matplotlib')
-
 
 # In[69]:
 
@@ -35,12 +24,12 @@ from typing import  List
 # In[71]:
 
 
-BUY_file_paths: List[str] =  sorted(glob("./BUY/*.nii.gz"))  #68 files
+BUY_file_paths=  sorted(glob("./BUY/*.nii.gz"))  #68 files
 #EAT_file_paths: List[str] =  sorted(glob("/content/drive/MyDrive/Integradora/Data/EAT/*.nii.gz"))  #files
-GAMBLE_file_paths: List[str] =  sorted(glob("./GAMBLE/*.nii.gz"))  #7 files
-SEX_file_paths: List[str] =  sorted(glob("./SEX/*.nii.gz"))  #42 files
+GAMBLE_file_paths =  sorted(glob("./GAMBLE/*.nii.gz"))  #7 files
+SEX_file_paths =  sorted(glob("./SEX/*.nii.gz"))  #42 files
 
-PD_file_paths: List[str] =  sorted(glob("./PD/*.nii.gz"))  #100 files
+PD_file_paths=  sorted(glob("./PD/*.nii.gz"))  #100 files
 
 
 # In[72]:
@@ -54,13 +43,6 @@ print(len(SEX_file_paths), SEX_file_paths[:3])
 print(len(PD_file_paths), PD_file_paths[:3])
 
 
-# ## SPLIT DATA
-
-# In[73]:
-
-
-import cv2
-
 
 # In[74]:
 
@@ -68,13 +50,16 @@ import cv2
 X_dataset = []
 y_dataset = []
 
-X_dataset.extend(PD_file_paths), y_dataset.extend([1] * len(PD_file_paths))
-X_dataset.extend(BUY_file_paths), y_dataset.extend([2] * len(BUY_file_paths))
-#X_dataset.extend(EAT_file_paths), y_dataset.extend([3] * len(EAT_file_paths))
-X_dataset.extend(GAMBLE_file_paths), y_dataset.extend([4] * len(GAMBLE_file_paths))
-X_dataset.extend(SEX_file_paths), y_dataset.extend([5] * len(SEX_file_paths))
+X_dataset.extend(PD_file_paths)
+y_dataset.extend([1] * len(PD_file_paths))
+X_dataset.extend(BUY_file_paths)
+y_dataset.extend([2] * len(BUY_file_paths))
+X_dataset.extend(GAMBLE_file_paths)
+y_dataset.extend([4] * len(GAMBLE_file_paths))
+X_dataset.extend(SEX_file_paths)
+y_dataset.extend([5] * len(SEX_file_paths))
 
-
+print("Dataset:", len(X_dataset), len(y_dataset))
 # In[75]:
 
 
@@ -84,8 +69,6 @@ X_train, X_test, y_train, y_test = train_test_split(X_dataset, y_dataset, test_s
 
 # In[76]:
 
-
-print("Dataset:", len(X_dataset), len(y_dataset))
 print("Train:", len(X_train), len(y_train))
 print("Test:", len(X_test), len(y_test))
 
@@ -149,7 +132,7 @@ def get_slices_3d(path, category):
 
 # In[47]:
 
-
+import cv2;
 def get_slices_per_group_3d(paths, categories):
     group = None
     group_cat = None
@@ -415,17 +398,17 @@ print(slices_cat.shape)
 
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Conv3D, MaxPool3D , Flatten
+from keras.layers import Dense, Conv2D, MaxPool2D , Flatten
+from keras.layers import Conv3D, MaxPool3D
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dropout
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-import matplotlib.pyplot as plt
 
 # ## AXIAL
 
 # In[15]:
 
-
+"""
 X_axial_train, y_axial_train = get_slices_per_group_axial(X_train, y_train)
 X_axial_train = X_axial_train.reshape(-1, X_axial_train.shape[1], X_axial_train.shape[2], 1)
 
@@ -500,32 +483,19 @@ early = EarlyStopping(monitor='val_acc', min_delta=0, patience=20, verbose=1, mo
 hist = model.fit(X_axial_train, y_axial_train, batch_size=10,epochs=30,validation_split=0.2, callbacks=[checkpoint])
 
 
-# In[23]:
-
-
-plt.plot(hist.history["accuracy"])
-plt.plot(hist.history['val_accuracy'])
-plt.plot(hist.history['loss'])
-plt.plot(hist.history['val_loss'])
-plt.title("model accuracy")
-plt.ylabel("Accuracy")
-plt.xlabel("Epoch")
-plt.legend(["Accuracy","Validation Accuracy","loss","Validation Loss"])
-plt.show()
-
 
 # In[25]:
 
 
 test_results = model.evaluate(X_axial_test, y_axial_test)
 test_results
-
+"""
 
 # # CORONAL
 
 # In[17]:
 
-
+"""
 X_coronal_train, y_coronal_train = get_slices_per_group_coronal(X_train, y_train)
 X_coronal_train = X_coronal_train.reshape(-1, X_coronal_train.shape[1], X_coronal_train.shape[2], 1)
 
@@ -601,22 +571,7 @@ early = EarlyStopping(monitor='val_acc', min_delta=0, patience=20, verbose=1, mo
 # In[ ]:
 
 
-hist = model.fit(X_coronal_train, y_coronal_train, batch_size=10,epochs=50,validation_split=0.2, callbacks=[checkpoint])
-
-
-# In[ ]:
-
-
-plt.plot(hist.history["accuracy"])
-plt.plot(hist.history['val_accuracy'])
-plt.plot(hist.history['loss'])
-plt.plot(hist.history['val_loss'])
-plt.title("model accuracy")
-plt.ylabel("Accuracy")
-plt.xlabel("Epoch")
-plt.legend(["Accuracy","Validation Accuracy","loss","Validation Loss"])
-plt.show()
-
+hist = model.fit(X_coronal_train, y_coronal_train, batch_size=10,epochs=2,validation_split=0.2, callbacks=[checkpoint])
 
 test_results = model.evaluate(X_coronal_test, y_coronal_test)
 test_results
@@ -625,7 +580,7 @@ test_results
 
 # In[ ]:
 
-
+"""
 X_sagital_train, y_sagital_train = get_slices_per_group_sagital(X_train, y_train)
 X_sagital_train = X_sagital_train.reshape(-1, X_sagital_train.shape[1], X_sagital_train.shape[2], 1)
 
@@ -635,4 +590,66 @@ X_sagital_train = X_sagital_train.reshape(-1, X_sagital_train.shape[1], X_sagita
 
 print("Train: X:(%d, %d, %d, %d), y: %d" %(X_sagital_train.shape[0],X_sagital_train.shape[1],X_sagital_train.shape[2],X_sagital_train.shape[3], len(y_sagital_train)))
 print("Test: X:(%d, %d, %d, %d), y: %d" %(X_sagital_test.shape[0],X_sagital_test.shape[1],X_sagital_test.shape[2],X_sagital_test.shape[3], len(y_sagital_test)))
+
+# # VGG19
+
+# In[21]:
+
+
+model = Sequential()
+model.add(Conv2D(input_shape=(224,224,1),filters=64,kernel_size=(3,3),padding="same", activation="relu"))
+model.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
+model.add(Dropout(0.4))
+model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Dropout(0.6))
+model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Dropout(0.8))
+model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Dropout(0.8))
+model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+model.add(Dropout(0.4))
+model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+
+#Dense layer
+model.add(Flatten())
+model.add(Dense(units=4096,activation="relu"))
+model.add(Dense(units=4096,activation="relu"))
+model.add(Dense(units=1000,activation="relu"))
+model.add(Dense(1, activation="softmax"))
+
+model.compile(optimizer='adam', loss=keras.losses.binary_crossentropy, metrics=['accuracy'])
+
+print(model.summary())
+
+
+# In[22]:
+
+
+checkpoint = ModelCheckpoint("vgg19_sagital.h5", monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+early = EarlyStopping(monitor='val_acc', min_delta=0, patience=20, verbose=1, mode='auto')
+#fit_generator(steps_per_epoch=1,generator=traindata, validation_data= testdata, validation_steps=1,epochs=50,callbacks=[checkpoint])
+# hist = model.fit(traindata, testdata, batch_size=10, epochs=20, verbose=0, shuffle=True,validation_split=0.2,callbacks=[checkpoint])
+
+
+# In[ ]:
+
+
+hist = model.fit(X_sagital_train, y_sagital_train, batch_size=10,epochs=2,validation_split=0.2, callbacks=[checkpoint])
+
+test_results = model.evaluate(X_sagital_test, y_sagital_test)
+test_results
 
