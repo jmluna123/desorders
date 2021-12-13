@@ -212,7 +212,6 @@ from keras.layers import Dense, Conv3D, MaxPool3D , Flatten
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dropout
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-import imageio
 import tensorflow as tf
 
 
