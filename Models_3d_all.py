@@ -144,7 +144,7 @@ print(slices_cat.shape)
 
 
 X_3d_all_train, y_3d_all_train = get_slices_per_group_3d_all(X_train, y_train)
-X_3d_all_test, y_3d_all_test = get_slices_per_group_3d(X_test, y_test)
+X_3d_all_test, y_3d_all_test = get_slices_per_group_3d_all(X_test, y_test)
 
 
 print("Train:",X_3d_all_train.shape, len(y_3d_all_train))
