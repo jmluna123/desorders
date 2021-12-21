@@ -155,6 +155,11 @@ from tensorflow.keras.applications import DenseNet121
 from keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, Lambda,Concatenate
 from keras.layers import SeparableConv2D, AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D, Add
 
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+plt.rcParams["axes.grid"] = False
+plt.rcParams.update({'font.size': 20})
 
 X_axial3c_train, y_axial3c_train = get_slices_per_group_axial_3c(X_train, y_train)
 
@@ -168,7 +173,6 @@ X_axialec_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test, y_test)
 # In[105]:
 
 
-batch_size = 30
 img_height, img_width = 224, 224
 input_shape = (img_height, img_width, 3)
 epochs = 1000
@@ -242,14 +246,15 @@ es_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, v
 # In[118]:
 
 
+batch_size = 10
 epochs = 1000
 dropout_rate = 0.5
 
 model = Sequential()
-# model.add(Flatten(input_shape=train_data.shape[1:]))
+model.add(Flatten(input_shape=X_axial3c_train.shape[1:]))
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(dropout_rate))
-model.add(Dense(1, activation=tf.nn.softmax))
+model.add(Dense(num_classes, activation=tf.nn.sigmoid))
 
 adam_opt2=Adam(lr = 0.0001, beta_1=0.7, beta_2=0.995, amsgrad=True)
 
@@ -262,5 +267,90 @@ history = model.fit(X_axial3c_train, y_axial3c_train,
                     validation_split=0.2,
                     verbose= 2)
 
-with open(extracted_features_dir+'history_'+model_name+'.txt','w') as f:
+with open('history_modelEsemble.txt','w') as f:
     f.write(str(history.history))
+
+preds = model.predict(X_axial3c_test)
+
+predictions = [(0 if i <0.5 else 1) for i in preds]
+cm = confusion_matrix(y_pred=predictions, y_true=y_axial3c_test)
+
+print('Accuracy {}'.format(accuracy_score(y_true=y_axial3c_test, y_pred=predictions)))
+
+plt.rcParams["axes.grid"] = False
+plt.rcParams.update({'font.size': 20})
+
+labels = ['parkinson', "parkinson + ICD"]
+
+from sklearn.metrics import confusion_matrix
+import itertools
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    accuracy = np.trace(cm) / float(np.sum(cm))
+    misclass = 1 - accuracy
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion Matrix')
+
+    print(cm)
+#     fig = plt.figure()
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+#     plt.title(title)
+#     plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    fmt = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt),
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
+    plt.savefig('confusion_marix.png', bbox_inches='tight', dpi = 100) 
+
+
+plt.figure(figsize=(10,10))
+plot_confusion_matrix(cm, classes=labels, title=' ')
+
+
+plt.style.use("seaborn-ticks")
+
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Training Acc', 'Test Acc'], loc='upper left')
+plt.show()
+plt.savefig('model_acc.png', bbox_inches='tight', dpi = 100) 
+
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Training Loss', 'Test Loss'], loc='upper left')
+plt.show()
+plt.savefig('model_pogress.png', bbox_inches='tight', dpi = 100) 
+
+plt.figure()
+N = len(history.history['accuracy'])
+plt.plot(np.arange(0, N), history.history["loss"], label="train_loss")
+plt.plot(np.arange(0, N), history.history["val_loss"], label="val_loss")
+plt.plot(np.arange(0, N), history.history["accuracy"], label="train_acc")
+plt.plot(np.arange(0, N), history.history["val_accuracy"], label="val_accuracy")
+plt.title("Training Loss and Accuracy")
+plt.xlabel("Epoch #")
+plt.ylabel("Loss/Accuracy")
+plt.legend(loc="upper left")
+plt.savefig('loss.png', bbox_inches='tight', dpi = 100)
