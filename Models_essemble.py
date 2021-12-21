@@ -165,13 +165,13 @@ plt.rcParams.update({'font.size': 20})
 # In[103]:
 
 
-X_axial3c_train, y_axial3c_train = get_slices_per_group_axial_3c(X_train[0:4], y_train[0:4])
+X_axial3c_train, y_axial3c_train = get_slices_per_group_axial_3c(X_train, y_train)
 
 
 # In[104]:
 
 
-X_axialec_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test[0:2], y_test[0:2])
+X_axialec_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test, y_test)
 
 
 # In[105]:
