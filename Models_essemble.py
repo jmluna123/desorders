@@ -257,7 +257,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),loss=kera
 
 history = model.fit(X_axial3c_train, y_axial3c_train,
                     epochs=epochs,
-                    batch_size=1,
+                    batch_size=30,
                     callbacks=[lr_reduce, es_callback],
                     validation_split=0.2,
                     verbose= 2)
