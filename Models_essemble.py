@@ -166,7 +166,7 @@ X_axial3c_train, y_axial3c_train = get_slices_per_group_axial_3c(X_train, y_trai
 # In[104]:
 
 
-X_axialec_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test, y_test)
+X_axial3c_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test, y_test)
 
 
 # In[105]:
