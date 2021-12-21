@@ -156,7 +156,6 @@ from keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormaliza
 from keras.layers import SeparableConv2D, AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D, Add
 
 import matplotlib.pyplot as plt
-%matplotlib inline
 
 plt.rcParams["axes.grid"] = False
 plt.rcParams.update({'font.size': 20})
