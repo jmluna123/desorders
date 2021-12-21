@@ -155,15 +155,6 @@ from tensorflow.keras.applications import DenseNet121
 from keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, Lambda,Concatenate
 from keras.layers import SeparableConv2D, AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D, Add
 
-import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
-
-plt.rcParams["axes.grid"] = False
-plt.rcParams.update({'font.size': 20})
-
-
-# In[103]:
-
 
 X_axial3c_train, y_axial3c_train = get_slices_per_group_axial_3c(X_train, y_train)
 
