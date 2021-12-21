@@ -168,7 +168,7 @@ X_axialec_test, y_axial3c_test = get_slices_per_group_axial_3c(X_test, y_test)
 # In[105]:
 
 
-batch_size = 32
+batch_size = 30
 img_height, img_width = 224, 224
 input_shape = (img_height, img_width, 3)
 epochs = 1000
@@ -257,7 +257,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),loss=kera
 
 history = model.fit(X_axial3c_train, y_axial3c_train,
                     epochs=epochs,
-                    batch_size=30,
+                    batch_size=batch_size,
                     callbacks=[lr_reduce, es_callback],
                     validation_split=0.2,
                     verbose= 2)
