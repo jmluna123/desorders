@@ -4,11 +4,12 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from glob import glob
 
-BUY_file_paths =  sorted(glob("./SEGMENTED/BUY/*.nii.gz"))  #68 files
-EAT_file_paths =  sorted(glob("./SEGMENTED/EAT/*.nii.gz"))  #85 files
-GAMBLE_file_paths =  sorted(glob("./SEGMENTED/GAMBLE/*.nii.gz")) #7 files
-SEX_file_paths =  sorted(glob("./SEGMENTED/SEX/*.nii.gz"))  #42 files
-PD_file_paths =  sorted(glob("./SEGMENTED/PD/*.nii.gz"))  #100 files
+BUY_file_paths =  sorted(glob("./PREPROCESSED/BUY/*.nii.gz"))  #42 files
+EAT_file_paths =  sorted(glob("./PREPROCESSED/EAT/*.nii.gz"))  #81 files
+GAMBLE_file_paths =  sorted(glob("./PREPROCESSED/GAMBLE/*.nii.gz")) #7 files
+SEX_file_paths =  sorted(glob("./PREPROCESSED/SEX/*.nii.gz"))  #22 files
+
+PD_file_paths =  sorted(glob("./PREPROCESSED/PD/*.nii.gz"))  #116 files
 
 print(len(BUY_file_paths), BUY_file_paths[:3])
 print(len(EAT_file_paths), EAT_file_paths[:3])
